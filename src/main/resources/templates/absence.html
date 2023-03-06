@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mt-3">
+            <h3>월별 부재 사용 계산기</h3>
+        </div>
+
+        <div class="d-flex justify-content-center ">
+            <div class="border col-8 mt-3">
+                <p>1. 유저 리스트 파일은 아래 인원에서 변동사항이 있을 때, 다운로드 받아 내용을 변경한 후 업로드</p>
+                <p>2. 네이버 워크플레이스 부재 조회에서 "원하는 달이 포함되게" 엑셀을 다운로드</p>
+                <p>3. 맨 위의 뽑으려고 하는 년도 월 선택 후 요청 -> 엑셀 다운로드 </p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="border col-8 m-3">
+                <form class="form-control" action="" method="get">
+                    <select id="year">
+                        <option th:each="m : ${#numbers.sequence(2023,2030)}" th:value="${m}" th:text="${m}"></option>
+                    </select>
+                    년
+                    <select id="month">
+                        <option th:each="m : ${#numbers.sequence(1,12)}" th:value="${m}" th:text="${m}"></option>
+                    </select>
+                    월
+                    <button class="btn btn-primary" type="button" onclick="requestResult()">요청</button>
+                </form>
+            </div>
+            </br>
+
+            <div class="border col-8">
+                    <form class="form-control" action="/upload/user/lists" method="post" enctype="multipart/form-data">
+                        <h4>유저 리스트 파일 업로드</h4>
+                        파일명 : <a th:text="${list_filename}" th:href="@{/download/list}">text</a>
+                        <br>
+                        마지막 업로드 시간 : <span class="md-3" th:text="${list_current_upload_time}">currentTime</span><br><br>
+                        <input class="form-control" type="file" name="file" required="required" id="formFile"><br>
+                        <input class="btn btn-primary" type="submit"/>
+                    </form>
+            </div>
+            <div class="border col-8 mt-3">
+                <table class="form-control">
+                    <thead>
+                    <tr style="border: black 1px">
+                        <th style="width: 100px;">이름</th>
+                        <th style="width: 200px;">이메일</th>
+                        <th style="width: 100px;">직급</th>
+                    </tr>
+                    </thead>
+                    <tbody id="userList">
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="border col-8 mt-3">
+                <form class="form-control" action="/upload/absence" method="post" enctype="multipart/form-data">
+                    <h4>네이버 워크플레이스 부재 엑셀파일 업로드</h4>
+                    파일명 : <a th:href="@{/download/absence}" th:text="${ab_filename}"> </a> <br>
+                    마지막 업로드 시간 : <span th:text="${ab_current_upload_time}" id="formfile1">currentTime</span><br><br>
+                    <input class="form-control" type="file" name="file" required="required"><br>
+                    <input class="btn btn-primary" type="submit"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function(){
+
+            let html = "";
+            fetch("/users", {
+                method: "get"
+            }).then(res=> res.json())
+            .then(users => {
+                for(user in users){
+                    html += '<tr>';
+                    html += '<td>' + users[user].username + '</td>';
+                    html += '<td>' + users[user].email + '</td>';
+                    html += '<td>' + users[user].position + '</td>';
+                    html += '</tr>';
+                }
+                console.log(document.getElementById('userList'))
+                document.getElementById("userList").innerHTML = html;
+            });
+        }
+
+        function requestResult() {
+            var year = document.getElementById("year").value;
+            var month = document.getElementById("month").value;
+            var filename = "";
+            alert("year : " + year + " month : " + month);
+
+            if (month >= 1 && month <= 9) {
+                month = '0' + month;
+            }
+
+            fetch("/dateselect/" + year + "/" + month, {
+                method: "get",
+                headers: {
+                    'Content-Type': 'application/octet-stream',
+                }
+            }).then((res) => {
+                const disposition = res.headers.get('Content-Disposition');
+                filename = disposition.split(/;(.+)/)[1].split(/=(.+)/)[1];
+                if (filename.toLowerCase().startsWith("utf-8''"))
+                    filename = decodeURIComponent(filename.replace(/utf-8''/i, ''));
+                else
+                    filename = filename.replace(/['"]/g, '');
+                return res.blob();
+            }).then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = decodeURI(filename).replace(/\+/g, " ")
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+        };
+    </script>
+
+</body>
+</html>
