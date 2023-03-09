@@ -1,4 +1,4 @@
-package com.example.excelparser.util;
+package com.example.excelparser.util.excel;
 
 import com.example.excelparser.dto.MergeDTO;
 import lombok.extern.slf4j.Slf4j;

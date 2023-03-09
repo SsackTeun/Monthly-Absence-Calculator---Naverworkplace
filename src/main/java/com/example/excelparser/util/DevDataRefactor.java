@@ -10,9 +10,11 @@ import org.apache.xmlbeans.impl.regex.Match;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,53 +27,39 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DevDataRefactor {
 
-    /**
-     * 스트링 날짜형식을 객체에 저장
-     * @param duration
-     * @return 2023.01.17(종일) ~ 2023.01.19(종일) ->
-     * durations": [
-     *       {
-     *         "startDate": "2023.03.24:종일",
-     *         "endDate": "2023.03.27:종일"
-     *       }
-     */
-    public static List<Duration> regDuration(String duration){
 
-        /**
-         * 여러 일정을 함께 등록한 경우 "/" 로 구분되는 것을 나눈다
-         */
-        String[] durations = duration.split("/");
+    //    * OPTIONS
+    public final static String EXCEPT_SATURDAY = "EXCEPT_SATURDAY";//     * 토요일 제외
+    public final static String EXCEPT_SUNDAY = "EXCEPT_SUNDAY";//     * 일요일 제외
+    public final static String EXCEPT_PUBLIC_HOLIDAY = "EXCEPT_PUBLIC_HOLIDAY";//     * 법정 공휴일 제외 (법정 공휴일이 주말인지 구분)
+    public final static String EXCEPT_ALTERNATIVE_HOLIDAY = "EXCEPT_ALTERNATIVE_HOLIDAY";//     * 대체 휴일 제외
 
-        /**
-         * 나눈 결과 N 개를 List<String> 형태로 변환한다.
-         */
-        List<String> durationslist = Arrays.stream(durations).collect(Collectors.toList());
+    public static List<MergeOriginWithDurationDTO> optionCalculator(
+            List<MergeOriginWithDurationDTO> merges,
+            List<String> options){
 
-        /**
-         * durationslist index : 2023.02.27(종일) ~ 2023.02.27(종일)\
-         * result : 2023.02.27(종일)
-         */
-        String regEx = "([0-9]{4}\\.[0-9]{2}\\.[0-9]{2})\\(([가-힣]{2})\\)[ \\t\\n\\x0B\\f\\r]~[ \\t\\n\\x0B\\f\\r]([0-9]{4}\\.[0-9]{2}\\.[0-9]{2})\\(([가-힣]{2})\\)";
-        Pattern pattern = Pattern.compile(regEx);
+        List<MergeOriginWithDurationDTO> results = null;
 
-        /**
-         * Durations 객체에 값 할당
-         */
+        if(options.contains(EXCEPT_SATURDAY)){
+            log.info("[contains : {}]", EXCEPT_SATURDAY);
+        }
+        if(options.contains(EXCEPT_SUNDAY)){
+            log.info("[contains : {}]", EXCEPT_SUNDAY);
+        }
+        if(options.contains(EXCEPT_PUBLIC_HOLIDAY)){
+            log.info("[contains : {}]", EXCEPT_PUBLIC_HOLIDAY);
+        }
+        if(options.contains(EXCEPT_ALTERNATIVE_HOLIDAY)){
+            log.info("[contains : {}]", EXCEPT_ALTERNATIVE_HOLIDAY);
+        }
 
-        List<Duration> list = new ArrayList<>();
-        durationslist.forEach(x -> {
-            //log.info("[Duration 원본 ] : {}", x);
-            Matcher matcher = pattern.matcher(x.trim());
-            Duration durationObj = null;
-            while(matcher.find()){
-                durationObj = new Duration();
-                durationObj.setStartDate(matcher.group(1).concat(":"+ matcher.group(2)));
-                durationObj.setEndDate(matcher.group(3).concat(":"+ matcher.group(4)));
-                log.info("{} : {} : {} : {} ", matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
-            }
-            list.add(durationObj);
-        });
-        return list;
+        return results;
+    }
+
+
+
+    public static List<Duration> durationSliceWithMonth(Duration duration){
+        return null;
     }
 }
 

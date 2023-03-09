@@ -34,6 +34,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.3'
 
+    implementation 'com.ibm.icu:icu4j:72.1'
+
 
 }
 

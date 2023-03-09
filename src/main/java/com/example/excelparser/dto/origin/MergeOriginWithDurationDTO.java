@@ -1,12 +1,13 @@
 package com.example.excelparser.dto.origin;
 
 import com.example.excelparser.dto.UserListDTO;
-import com.example.excelparser.util.DevDataRefactor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Slf4j
@@ -18,12 +19,22 @@ public class MergeOriginWithDurationDTO{
     //로그인 아이디
     private String loginId;
 
-    //부서
-    private String department;
+    //직책
+    private String position;
 
     //기간
     private List<Duration> durations;
 
+    //해당연도 모든 일자 리스팅
+    private List<String> selectedYearInAllDates;
+
+    //해당연도의 선택한 달 리스팅
+    private SelectedMonth selectedMonth;
+
+    /**
+     * UTILITY
+     * @Param origin (원본 데이터), @Param users (유저 원본데이터)
+     */
     public static List<MergeOriginWithDurationDTO> convertTo(List<OriginDTO> origin, List<UserListDTO> users){
         //결과리스트
         List<MergeOriginWithDurationDTO> durations = new ArrayList<>();
@@ -33,12 +44,12 @@ public class MergeOriginWithDurationDTO{
          * 원본에서 꺼내서 새로 만들어낼 데이터에 값 넣기
          */
         for (OriginDTO originDTO : origin) {
-            log.info("{}", originDTO);
+            log.debug("{}", originDTO);
             duration = new MergeOriginWithDurationDTO();
             duration.setLoginId(originDTO.getLoginId());
             duration.setName(originDTO.getName());
-            duration.setDepartment(originDTO.getDepartment());
-            duration.setDurations(DevDataRefactor.regDuration(originDTO.getDurations()));
+            duration.setPosition(originDTO.getPosition());
+            duration.setDurations(Duration.parseFromOrigin(originDTO.getDurations()));
             durations.add(duration);
         }
 
@@ -59,14 +70,14 @@ public class MergeOriginWithDurationDTO{
                     if(m.getLoginId().equals(email)){
                         //해당 조건을 만족하면, 객체에 담기
                         merge.setName(m.getName());
-                        merge.setDepartment(m.getDepartment());
+                        merge.setPosition(m.getPosition());
                         merge.setLoginId(m.getLoginId());
                         mergeDuration.addAll(m.getDurations());
                     }
                     else{
                         merge.setName(user.getUsername());
                         merge.setDurations(null);
-                        merge.setDepartment(user.getPosition());
+                        merge.setPosition(user.getPosition());
                         merge.setLoginId(user.getEmail());
                     }
                 }
@@ -75,5 +86,89 @@ public class MergeOriginWithDurationDTO{
             }
         }
         return merges;
+    }
+
+    public static List<MergeOriginWithDurationDTO> compareMonth(List<MergeOriginWithDurationDTO> merges){
+        log.info("{}", merges);
+        /**
+         * Variable
+         */
+        List<MergeOriginWithDurationDTO> results = new ArrayList<>();
+
+        //데이터 순환
+        for (MergeOriginWithDurationDTO merge : merges) {
+            //유저당 기간 데이터 접근
+            log.info("{}", merge.getName());
+            MergeOriginWithDurationDTO result = new MergeOriginWithDurationDTO();
+            result.setName(merge.getName());
+            result.setPosition(merge.getPosition());
+            result.setLoginId(merge.getLoginId());
+            result.setDurations(Duration.getListOfDuration(merge.getDurations()));
+            results.add(result);
+        }
+        return results;
+    }
+
+    public static List<MergeOriginWithDurationDTO> compareMonth(List<MergeOriginWithDurationDTO> merges, String years, String month){
+        log.info("{}", merges);
+        /**
+         * Variable
+         */
+        List<MergeOriginWithDurationDTO> results = new ArrayList<>();
+
+        //데이터 순환
+        for (MergeOriginWithDurationDTO merge : merges) {
+            //유저당 기간 데이터 접근
+            log.info("{}", merge.getName());
+            MergeOriginWithDurationDTO result = new MergeOriginWithDurationDTO();
+            result.setName(merge.getName());
+            result.setPosition(merge.getPosition());
+            result.setLoginId(merge.getLoginId());
+
+            List<Duration> durationList = Duration.getListOfDuration(merge.getDurations(), years);
+            result.setDurations(durationList);
+
+            List<String> mergeDates = new ArrayList<>();
+            for (Duration duration : result.getDurations()) {
+                mergeDates.addAll(duration.getDates());
+            }
+            result.setSelectedYearInAllDates(mergeDates);
+            result.setSelectedMonth(selectedMonth(mergeDates, month));
+            results.add(result);
+        }
+        return results;
+    }
+
+    public static SelectedMonth selectedMonth(List<String> selectedYearInAllDates, String selectMonth){
+
+        SelectedMonth sMonth = new SelectedMonth();
+        List<String> monthes = new ArrayList<>();
+
+        float days = 0f;
+
+        for (String selectedYearInAllDate : selectedYearInAllDates) {
+
+            String date = selectedYearInAllDate.split(":")[0];
+            String year =date.split("\\.")[0];
+            String month = date.split("\\.")[1];
+            String day = date.split("\\.")[2];
+            String type = selectedYearInAllDate.split(":")[1];
+
+            if(month.equals(selectMonth)) {
+                if(type.equals("종일")){
+                    monthes.add(selectedYearInAllDate);
+                    days += 1.0f*1;
+                }
+                else if(type.equals("오후") || type.equals("오전")){
+                    monthes.add(selectedYearInAllDate);
+                    days += 0.5f * 1;
+                }
+            }
+        }
+        sMonth.setMonth(selectMonth);
+        sMonth.setDays(String.valueOf(days));
+        sMonth.setDates(monthes);
+
+        return sMonth;
     }
 }

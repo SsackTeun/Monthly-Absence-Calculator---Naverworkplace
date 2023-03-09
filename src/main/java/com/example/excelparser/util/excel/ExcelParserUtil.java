@@ -1,4 +1,4 @@
-package com.example.excelparser.util;
+package com.example.excelparser.util.excel;
 
 import com.example.excelparser.dto.origin.OriginDTO;
 import com.example.excelparser.dto.UserListDTO;
@@ -55,7 +55,7 @@ public class ExcelParserUtil {
                             userListDTO.setPosition(value);
                             break;
                     }
-                    System.out.println( rowNum + "번 행 : " + cellNumber + "번 열 값은: " + value);
+                    log.debug( rowNum + "번 행 : " + cellNumber + "번 열 값은: " + value);
                 }
                 list.add(userListDTO);
             }
@@ -100,8 +100,8 @@ public class ExcelParserUtil {
                         case 2: // 로그인 아이디
                             originDTO.setLoginId(value);
                             break;
-                        case 3: // 부서
-                            originDTO.setDepartment(value);
+                        case 3: // 직책
+                            originDTO.setPosition(value);
                             break;
                         case 4: //부재 항목
                             originDTO.setAbsentCase(value);
@@ -116,7 +116,7 @@ public class ExcelParserUtil {
                             originDTO.setRequestDate(value);
                             break;
                     }
-                    System.out.println( rowNum + "번 행 : " + cellNumber + "번 열 값은: " + value);
+                    log.debug( rowNum + "번 행 : " + cellNumber + "번 열 값은: " + value);
                 }
                 list.add(originDTO);
             }

@@ -13,8 +13,8 @@ public class OriginDTO {
     //로그인 아이디
     private String loginId;
 
-    //부서
-    private String department;
+    //직책
+    private String position;
 
     //부재 항목
     private String absentCase;
