@@ -50,7 +50,7 @@ public class ExcelCreation {
 
         titleRow = sheet.createRow(0);
         titleCell = titleRow.createCell(0);
-        titleCell.setCellValue(data.get(0).getSelect() + " 휴가 사용 내역");
+        titleCell.setCellValue(data.get(0).getSelect() + "월 휴가 사용 내역");
         titleCell.setCellStyle(align);
 
         titleRow.setHeight((short) 1000);

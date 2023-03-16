@@ -54,4 +54,13 @@ public class ControllerT {
         //return dataRefactorService.isHolidayCalculate(years, month);
         new ExcelCreation().createFile(response, MergeDTO.convert(dataRefactorService.isHolidayCalculate(years, month)), years, month);
     }
+
+    @GetMapping("/calculate/isholiday/{years}/{month}/{type}")
+    public List<MergeDTO> calculate(@PathVariable("years") String years,
+                          @PathVariable("month") String month,
+                        @PathVariable("type") String type
+                          ) throws IOException {
+        //return dataRefactorService.isHolidayCalculate(years, month);
+        return MergeDTO.convert(dataRefactorService.isHolidayCalculate(years, month));
+    }
 }

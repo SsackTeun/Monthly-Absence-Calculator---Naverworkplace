@@ -9,4 +9,5 @@ public class SelectedMonth {
     private String month;
     private String days;
     private List<String> dates;
+    private List<String> sortedByMonth;
 }

@@ -50,24 +50,17 @@ public class MergeDTO {
             name = x.getName();
             days = Float.parseFloat(x.getSelectedMonth().getDays());
             position = x.getPosition();
-            realWorkTimes = 208;
+            workTimes= 208;
             absenceTimes = (int) (8 * days);
-            workTimes = realWorkTimes - absenceTimes;
-
-            List<String> makeDuration = new ArrayList<>();
-
-            x.getDurations().forEach(y ->{
-                makeDuration.add(y.getStartDate()+"-"+y.getEndDate());
-            });
+            realWorkTimes = workTimes - absenceTimes;
 
 
-            
             list.add(new MergeDTO().builder()
                     .select(select)
                     .name(name)
                     .email(email)
                     .department(null)
-                    .duration(makeDuration)
+                    .duration(x.getSelectedMonth().getDates())
                     .absenceTimes(absenceTimes)
                     .realWorkTimes(realWorkTimes)
                     .workTimes(workTimes)
