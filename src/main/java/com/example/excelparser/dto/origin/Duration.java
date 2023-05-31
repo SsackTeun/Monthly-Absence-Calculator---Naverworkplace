@@ -4,6 +4,7 @@ import com.example.excelparser.util.date.LunarCalendar;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.net.ssl.SSLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -157,7 +158,7 @@ public class Duration {
      * List<Duration> 에서 기간 데이터를 모두 탐색후, 월이 다른것은 분리 해준다.
      * +@ years 년도 기준으로 공휴일, 토일, 대체 공휴일 제외하기
      */
-    public static List<Duration> getListOfDuration(List<Duration> durations, String years) {
+    public static List<Duration> getListOfDuration(List<Duration> durations, String years, String month) throws SSLException {
 
         /**
          * 기간을 다시 생성하여 반환
@@ -243,7 +244,7 @@ public class Duration {
                         startDate = startDate.plusDays(1);
                     }
                     log.info("{}", date);
-                    duration.setDates(isHoliday(date, years));
+                    duration.setDates(isHoliday(date, years, month));
 
                     float days = 0f;
                     for (String durationDate : duration.getDates()) {
@@ -263,7 +264,9 @@ public class Duration {
         return results;
     }
 
-    private static List<String> isHoliday(List<String> dates, String years){
+    private static List<String> isHoliday(List<String> dates, String years, String month1) throws SSLException {
+
+        log.info("dates : {}", dates);
 
         List<String> durations = new ArrayList<>();
         /**
@@ -274,7 +277,7 @@ public class Duration {
         /**
          * 입력 받은 연도의 공휴일을 Set 으로 받아옴.
          */
-        Set<String> localDate = lunarCalendar.holidayArray(years);
+        Set<String> localDate = lunarCalendar.holidayArray(years, month1);
         log.info(localDate.toString());
 
         for (String date : dates) {

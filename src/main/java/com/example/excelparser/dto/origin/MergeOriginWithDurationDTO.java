@@ -4,6 +4,7 @@ import com.example.excelparser.dto.UserListDTO;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.net.ssl.SSLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +110,7 @@ public class MergeOriginWithDurationDTO{
         return results;
     }
 
-    public static List<MergeOriginWithDurationDTO> compareMonth(List<MergeOriginWithDurationDTO> merges, String years, String month){
+    public static List<MergeOriginWithDurationDTO> compareMonth(List<MergeOriginWithDurationDTO> merges, String years, String month) throws SSLException {
         log.info("{}", merges);
         /**
          * Variable
@@ -125,7 +126,7 @@ public class MergeOriginWithDurationDTO{
             result.setPosition(merge.getPosition());
             result.setLoginId(merge.getLoginId());
 
-            List<Duration> durationList = Duration.getListOfDuration(merge.getDurations(), years);
+            List<Duration> durationList = Duration.getListOfDuration(merge.getDurations(), years, month);
             result.setDurations(durationList);
 
             List<String> mergeDates = new ArrayList<>();
