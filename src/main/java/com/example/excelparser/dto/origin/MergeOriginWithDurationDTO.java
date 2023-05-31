@@ -1,10 +1,12 @@
 package com.example.excelparser.dto.origin;
 
 import com.example.excelparser.dto.UserListDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.SSLException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +112,7 @@ public class MergeOriginWithDurationDTO{
         return results;
     }
 
-    public static List<MergeOriginWithDurationDTO> compareMonth(List<MergeOriginWithDurationDTO> merges, String years, String month) throws SSLException {
+    public static List<MergeOriginWithDurationDTO> compareMonth(List<MergeOriginWithDurationDTO> merges, String years, String month) throws SSLException, JsonProcessingException, UnsupportedEncodingException {
         log.info("{}", merges);
         /**
          * Variable
