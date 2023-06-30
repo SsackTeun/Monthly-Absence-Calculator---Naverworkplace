@@ -19,6 +19,9 @@ repositories {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation 'org.jsoup:jsoup:1.8.3'
+
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.0'

@@ -280,7 +280,8 @@ public class Duration {
          * 입력 받은 연도의 공휴일을 Set 으로 받아옴.
          */
         Set<String> localDate = lunarCalendar.holidayArray(years, month1);
-        log.info(localDate.toString());
+        log.info("asasdfqwersdf {} " , localDate.toString());
+
 
         for (String date : dates) {
             /**

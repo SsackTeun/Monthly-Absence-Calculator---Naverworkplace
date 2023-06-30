@@ -8,11 +8,14 @@ import com.example.excelparser.util.DataRefactoring;
 import com.example.excelparser.util.excel.ExcelCreation;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -20,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -179,5 +184,13 @@ public class Controller {
     ) throws IOException {
         new ExcelCreation().createFile(response, DataRefactoring.getEachMonthWithSelectMonth(year,month), year, month);
         //return DataRefactor.getEachMonthWithSelectMonth(year,month);
+    }
+
+    @GetMapping("/test/crawler")
+    public void data() throws IOException {
+        Connection connection =
+                Jsoup.connect("https://onware.ncpworkplace.com/authn/oauthLogin?response_type=code&client_id=DaYn1zZY5_ayPaqxfn7c&redirect_uri=https%3A%2F%2Fauth.worksmobile.com%2Fview%2Foauth%2Fsso%2Fauthorization%2FR59C18W8&worksId=jy@onware.co.kr");
+        log.info("{} " , connection.get().toString());
+
     }
 }

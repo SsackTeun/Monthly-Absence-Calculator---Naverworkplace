@@ -1,6 +1,7 @@
 package com.example.excelparser.util.date;
 
 import com.example.excelparser.dto.HolidayAPIDTO;
+import com.example.excelparser.dto.Item;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.util.ChineseCalendar;
@@ -25,9 +26,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -86,14 +85,27 @@ public class LunarCalendar {
 
 
 
-        log.info("asdf : {}", holidayAPIDTO.toString());
+        Object item = holidayAPIDTO.getResponse().getBody().getItems().getItem();
+        Set<String> holidaysSet = new HashSet<>();
+
+        if (item instanceof ArrayList) {
+            log.info("asdf instance type : {}" , item.getClass());
+            ArrayList<Item> itemList = (ArrayList<Item>) item;
+            holidaysSet = itemList.stream()
+                    .filter(Objects::nonNull)
+                    .map(Item::getLocdate)
+                    .collect(Collectors.toSet());
 
 
-        holidayAPIDTO.getResponse().getBody().getItems().getItem().stream().map(item -> holidaysSet.add(item.getLocdate()));
-
-
+        } else if (item instanceof Item) {
+            log.info(" instance type : {}" , item.getClass());
+            Item singleItem = (Item) item;
+            holidaysSet.add(singleItem.getLocdate());
+        }
 
         return holidaysSet;
+
+
     }
 }
 
