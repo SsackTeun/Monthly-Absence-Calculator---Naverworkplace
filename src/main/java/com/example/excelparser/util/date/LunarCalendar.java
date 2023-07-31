@@ -2,13 +2,16 @@ package com.example.excelparser.util.date;
 
 import com.example.excelparser.dto.HolidayAPIDTO;
 import com.example.excelparser.dto.Item;
+import com.example.excelparser.dto.Items;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.util.ChineseCalendar;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.iterators.ArrayListIterator;
 import org.apache.poi.openxml4j.opc.internal.ContentType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -28,6 +32,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class LunarCalendar {
@@ -81,26 +86,45 @@ public class LunarCalendar {
                 .bodyToMono(HolidayAPIDTO.class)
                 .block();
 
+        log.info("date : {}", holidayAPIDTO.toString());
 
+        Object items = holidayAPIDTO.getResponse().getBody().getItems();
 
-
-
-        Object item = holidayAPIDTO.getResponse().getBody().getItems().getItem();
+        log.info("{}::::asdf", items.getClass().getTypeName());
         Set<String> holidaysSet = new HashSet<>();
 
-        if (item instanceof ArrayList) {
-            log.info("asdf instance type : {}" , item.getClass());
-            ArrayList<Item> itemList = (ArrayList<Item>) item;
-            holidaysSet = itemList.stream()
-                    .filter(Objects::nonNull)
-                    .map(Item::getLocdate)
-                    .collect(Collectors.toSet());
+        if (items instanceof LinkedHashMap) {
+            log.info("asdf instance type : {}" , items.getClass());
+
+            log.info("{}", ((LinkedHashMap<?, ?>) items).get("item"));
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            Object items1 = objectMapper.convertValue(((LinkedHashMap<?, ?>) items).get("item"), new TypeReference<>() {});
+
+            log.info("asdf  {}"  ,items1.getClass().getName());
+
+            if(items1 instanceof ArrayList){
+                log.info("{}", "1");
+                ((ArrayList<?>) items1).forEach(x -> {
+                    Item i = objectMapper.convertValue(x, Item.class);
+                    holidaysSet.add(i.getLocdate());
+                });
 
 
-        } else if (item instanceof Item) {
-            log.info(" instance type : {}" , item.getClass());
-            Item singleItem = (Item) item;
-            holidaysSet.add(singleItem.getLocdate());
+            }else if(items1 instanceof LinkedHashMap){
+                //단일
+                log.info("{}", "2");
+                ((LinkedHashMap<?, ?>) items1).forEach((x, y) -> {
+                    if(x.equals("locdate")){
+                        holidaysSet.add(y.toString());
+                    }
+                });
+
+            }
+        }
+        else if (items instanceof String) {
+            log.info(" instance type : {}" , items.getClass());
+            holidaysSet.add(null);
         }
 
         return holidaysSet;
