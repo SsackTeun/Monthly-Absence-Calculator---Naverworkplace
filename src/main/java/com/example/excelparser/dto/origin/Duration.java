@@ -69,12 +69,16 @@ public class Duration {
          * 기간을 다시 생성하여 반환
          */
         List<Duration> results = durations;
-
+        results.forEach(x -> {
+            log.info("result : {}", x);
+        });
         /**
          * 정규식 사용
          */
         String regex = "([0-9]{4}\\.[0-9]{2}\\.[0-9]{2}):([가-힣]{2})";
         Pattern pattern = Pattern.compile(regex);
+
+
 
         /**
          * 객체에서 시작일, 끝일을 가져와서 정규식으로 찾는다.

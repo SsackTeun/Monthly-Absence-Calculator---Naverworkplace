@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Component
@@ -110,7 +112,7 @@ public class ExcelParserUtil {
                             originDTO.setDays(value);
                             break;
                         case 6: //기간
-                            originDTO.setDurations(value);
+                            originDTO.setDurations(convertDuration(value));
                             break;
                         case 7: //작성일
                             originDTO.setRequestDate(value);
@@ -122,5 +124,20 @@ public class ExcelParserUtil {
             }
         }
         return list;
+    }
+
+    public static String convertDuration(String str){
+        String pattern1 = "(\\d{4})\\.(\\d{2})\\.(\\d{2})\\(([가-힣]{2})\\)";
+        String pattern2 ="(\\d{4})\\.(\\d{2})\\.(\\d{2})\\(([가-힣]{2})(\\s/\\s\\d{2}:\\d{2}\\s~\\s\\d{2}:\\d{2}\\))";
+        // pattern1에 대한 대체 작업
+        Pattern p1 = Pattern.compile(pattern1);
+        Matcher m1 = p1.matcher(str);
+        str = m1.replaceAll("$1.$2.$3($4)");
+
+        // pattern2에 대한 대체 작업
+        Pattern p2 = Pattern.compile(pattern2);
+        Matcher m2 = p2.matcher(str);
+        str= m2.replaceAll("$1.$2.$3($4) ~ $1.$2.$3($4)");
+        return str;
     }
 }
