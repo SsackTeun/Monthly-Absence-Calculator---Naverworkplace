@@ -9,6 +9,11 @@ naverworkplace 부재 파싱 -> 월별 휴가 사용시간 산출
 해당월의 1일 ~ 말일 까지 선택하여, 엑셀로 내려받는다
 ![image](https://github.com/SsackTeun/naverworkplace-absence-monthly-report/assets/24308378/6b93bdf5-a5a8-4e53-b490-5902ce19b5af)
 
+# 사용한 API
+ * API 를 호출해야하므로, 외부와 네트워크통신이 가능해야함
+기존에는 JAVA 의 ChineseCalendar  날짜가 달라지는 문제가 발생하였음.
+대안으로 공공데이터포탈의 천문정보 API 를 사용하여, 휴일 정보를 얻어옴.
+
 # 구동 화면
 프로그램은 웹페이지로 구동하며, 제일 아래에 있는 "네이버 워크플레이스 부재 엑셀파일 업로드" 에 업로드 해준다
 <img width="428" alt="image" src="https://github.com/SsackTeun/naverworkplace-absence-monthly-report/assets/24308378/122a641f-8263-4861-ae14-0162c64a62f6">
