@@ -1,13 +1,12 @@
 package com.example.excelparser.controller;
 
 import com.example.excelparser.dto.MergeDTO;
-import com.example.excelparser.dto.origin.OriginDTO;
 import com.example.excelparser.dto.RefactorDTO;
 import com.example.excelparser.dto.UserListDTO;
+import com.example.excelparser.dto.origin.OriginDTO;
 import com.example.excelparser.util.DataRefactoring;
 import com.example.excelparser.util.excel.ExcelCreation;
 import lombok.extern.slf4j.Slf4j;
-
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.springframework.core.io.UrlResource;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -23,8 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,10 +32,17 @@ import java.util.List;
 @Slf4j
 @RestController
 public class Controller {
+    
+    /* 파일 저장 위치 root */
     private String multipart_location = System.getProperty("user.dir")+"/data";
+    
+    /* 사용자 리스트 파일 업로드파일 저장 위치 */
     private String upload_list_path = multipart_location +"/list";
 
+    /* 네이버워크플레이스 부재 엑셀파일 업로드파일 저장 위치 */
     private String upload_absence_path =multipart_location +"/absence";
+    
+    /* 부재 엑셀파일 원본 데이터 가공 관련 */
     private DataRefactoring dataRefactor;
     Controller() throws IOException {
         dataRefactor = new DataRefactoring();

@@ -9,7 +9,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -125,7 +124,7 @@ public class ExcelCreation {
     public void createFile(HttpServletResponse response, List<MergeDTO> data, String year, String month) throws IOException {
         File currDir = new File(".");                // 현재 프로젝트 경로를 가져옴
         String path = currDir.getAbsolutePath();
-        String filename = "온웨어 "+ year+"년 "+month+"월 휴가 사용 내역.xlsx";
+        String filename = "휴가 사용 내역_"+ year+"년"+month+"월.xlsx";
         String fileLocation = path.substring(0, path.length() - 1) +filename;   // 파일명 설정
 
         log.info("current path:::{} \n path:::{} \n fileLocation ::: {}", currDir, path, fileLocation);

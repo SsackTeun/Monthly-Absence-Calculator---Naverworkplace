@@ -3,15 +3,11 @@ package com.example.excelparser.service;
 import com.example.excelparser.dto.UserListDTO;
 import com.example.excelparser.dto.origin.MergeOriginWithDurationDTO;
 import com.example.excelparser.dto.origin.OriginDTO;
-import com.example.excelparser.util.DevDataRefactor;
 import com.example.excelparser.util.excel.ExcelParserUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-
-import static com.example.excelparser.util.DevDataRefactor.*;
 
 @Service
 public class DataRefactorService implements DataRefactor{
