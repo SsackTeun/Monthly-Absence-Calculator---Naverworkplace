@@ -13,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -20,13 +22,20 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.SSLException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class LunarCalendar {
@@ -124,6 +133,58 @@ public class LunarCalendar {
         return holidaysSet;
 
 
+    }
+
+    /* 실근무일수 반환 */
+    public int totalWorkingDay(String years,
+                               String month) throws IOException {
+
+        LunarCalendar lunarCalendar = new LunarCalendar();
+        Set<String> localDate = lunarCalendar.holidayArray(years, month);
+
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        /* 공휴일이면서, 주말에 낀 것 카운트 */
+        AtomicInteger isHolidayAndWeekend = new AtomicInteger();
+
+        localDate.stream().forEach(
+                s -> {
+                    log.info("test: {}", LocalDate.parse(s, format).getDayOfWeek());
+                    if(LocalDate.parse(s, format).getDayOfWeek().toString().equals("SATURDAY")
+                            ||LocalDate.parse(s, format).getDayOfWeek().toString().equals("SUNDAY")){
+                        isHolidayAndWeekend.getAndIncrement();
+                    }
+                }
+        );
+        /* 찐 공휴일 */
+        int realHolidayCount = localDate.size() - isHolidayAndWeekend.get();
+        log.info("찐 공휴일 = {해당월의 국경일 수} - {국경일이면서, 주말인 것} : {}",  localDate.size() - isHolidayAndWeekend.get());
+
+        /* #### 해당 월의 총 일수를 구하고, 토요일과 일요일을 제외한 평일 수 구하기 */
+        LocalDate firstDayOfMonth = LocalDate.of(Integer.parseInt(years), Integer.parseInt(month), 1);
+        LocalDate lastDayOfMonth = firstDayOfMonth.with(TemporalAdjusters.lastDayOfMonth());
+
+        // 해당 월의 총 일수 계산
+        int totalDaysMonth = lastDayOfMonth.getDayOfMonth();
+
+        // 평일(토요일과 일요일 제외)의 일수 계산
+        int weekdays = 0;
+        LocalDate currentDate = firstDayOfMonth;
+        while (!currentDate.isAfter(lastDayOfMonth)) {
+            if (currentDate.getDayOfWeek() != DayOfWeek.SATURDAY && currentDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                weekdays++;
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+
+        System.out.println(years + "년 " + month + "월의 총 일수: " + totalDaysMonth);
+        System.out.println("평일(토요일과 일요일 제외)의 일수: " + weekdays);
+
+        int realWorkingDay = (weekdays - realHolidayCount);
+        log.info("실 근로일수 : {}", realWorkingDay);
+
+        return realWorkingDay;
     }
 }
 

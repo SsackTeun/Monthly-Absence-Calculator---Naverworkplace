@@ -9,8 +9,6 @@ import com.example.excelparser.util.DataRefactoring;
 import com.example.excelparser.util.date.LunarCalendar;
 import com.example.excelparser.util.excel.ExcelCreation;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +26,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
@@ -202,14 +205,11 @@ public class Controller {
         new ExcelCreation().createFile(response, MergeDTO.convert(dataRefactorService.isHolidayCalculate(years, month)), years, month);
     }
 
-    @GetMapping("/isholiday/{years}/{month}")
-    public int holiday(@PathVariable("years") String years,
-                          @PathVariable("month") String month,
-                          HttpServletResponse response) throws IOException {
 
-        LunarCalendar lunarCalendar = new LunarCalendar();
-        Set<String> localDate = lunarCalendar.holidayArray(years, month);
-        return localDate.size();
+
+    public int  isWeekend(LocalDate localDate){
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return dayOfWeek.getValue();
     }
 
 }

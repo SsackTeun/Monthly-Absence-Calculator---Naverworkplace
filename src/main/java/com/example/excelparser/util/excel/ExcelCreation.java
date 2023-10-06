@@ -1,6 +1,7 @@
 package com.example.excelparser.util.excel;
 
 import com.example.excelparser.dto.MergeDTO;
+import com.example.excelparser.util.date.LunarCalendar;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -28,7 +29,7 @@ public class ExcelCreation {
 
     private XSSFFont font;
 
-    public Workbook writeExcelSheet(List<MergeDTO> data){
+    public Workbook writeExcelSheet(List<MergeDTO> data, String year, String month) throws IOException {
         workbook = new XSSFWorkbook();
         sheet = workbook.createSheet("연차 사용 내역");
         sheet.setColumnWidth(0, 13*256);
@@ -109,6 +110,9 @@ public class ExcelCreation {
             titleCell.setCellValue(data.get(i).getRealWorkTimes());
             titleCell.setCellStyle(align);
         }
+
+        int realWorkingDay = new LunarCalendar().totalWorkingDay(year,month);
+
         ADDITIONAL_ROW = BODY_INDEX + 1;
         titleRow = sheet.createRow(ADDITIONAL_ROW);
 
@@ -116,7 +120,7 @@ public class ExcelCreation {
         titleCell.setCellValue("총 근로일수");
 
         titleCell = titleRow.createCell(6);
-        titleCell.setCellValue("0 일");
+        titleCell.setCellValue(realWorkingDay + " 일");
 
         return workbook;
     }
@@ -140,7 +144,7 @@ public class ExcelCreation {
 
         log.info("current path:::{} \n path:::{} \n fileLocation ::: {}", currDir, path, fileLocation);
 
-        workbook = writeExcelSheet(data);        // workbook을 반환하는 메서드(직접작성한 메서드로 무시해도 됨..)
+        workbook = writeExcelSheet(data, year, month);        // workbook을 반환하는 메서드(직접작성한 메서드로 무시해도 됨..)
 
 //        FileOutputStream fileOutputStream = new FileOutputStream(fileLocation);        // 파일 생성
 //        workbook.write(fileOutputStream);                                            // 엑셀파일로 작성
