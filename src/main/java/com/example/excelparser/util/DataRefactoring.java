@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class DataRefactoring {
+
+    /* 엑셀 파싱 유틸리티 클래스 */
     private static ExcelParserUtil excelParserUtil;
 
     public DataRefactoring() {

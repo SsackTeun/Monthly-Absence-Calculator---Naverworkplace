@@ -38,12 +38,13 @@ public class ExcelCreation {
         sheet.setColumnWidth(2, 32*256);
         sheet.setColumnWidth(3, 13*256);
         sheet.setColumnWidth(4, 13*256);
-        sheet.setColumnWidth(5, 13*256);
-        sheet.setColumnWidth(6, 13*256);
+        sheet.setColumnWidth(5, 15*256);
+        sheet.setColumnWidth(6, 15*256);
 
         CellStyle align = workbook.createCellStyle();
         align.setVerticalAlignment(VerticalAlignment.CENTER);
         align.setAlignment(HorizontalAlignment.CENTER);
+        align.setWrapText(true);
 
         CellStyle size1 = workbook.createCellStyle();
 
@@ -75,6 +76,7 @@ public class ExcelCreation {
         }
 
         int BODY_INDEX = 3;
+        int ADDITIONAL_ROW = 0;
         /** 내용 **/
         for(int i = 0; i < data.size(); i++) {
             log.info("{}", data);
@@ -107,6 +109,15 @@ public class ExcelCreation {
             titleCell.setCellValue(data.get(i).getRealWorkTimes());
             titleCell.setCellStyle(align);
         }
+        ADDITIONAL_ROW = BODY_INDEX + 1;
+        titleRow = sheet.createRow(ADDITIONAL_ROW);
+
+        titleCell = titleRow.createCell(5);
+        titleCell.setCellValue("총 근로일수");
+
+        titleCell = titleRow.createCell(6);
+        titleCell.setCellValue("0 일");
+
         return workbook;
     }
 

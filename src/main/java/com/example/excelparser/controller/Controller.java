@@ -4,7 +4,9 @@ import com.example.excelparser.dto.MergeDTO;
 import com.example.excelparser.dto.RefactorDTO;
 import com.example.excelparser.dto.UserListDTO;
 import com.example.excelparser.dto.origin.OriginDTO;
+import com.example.excelparser.service.DataRefactorService;
 import com.example.excelparser.util.DataRefactoring;
+import com.example.excelparser.util.date.LunarCalendar;
 import com.example.excelparser.util.excel.ExcelCreation;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
@@ -28,6 +30,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -44,33 +47,15 @@ public class Controller {
     
     /* 부재 엑셀파일 원본 데이터 가공 관련 */
     private DataRefactoring dataRefactor;
+    private DataRefactorService dataRefactorService;
     Controller() throws IOException {
         dataRefactor = new DataRefactoring();
+        dataRefactorService = new DataRefactorService();
     }
 
-    /**
-     * 원본데이터
-     * {
-     *     "doc_num": "2023_TIM01_000011",
-     *     "name": "유오선",
-     *     "loginId": "osyu@onware.co.kr",
-     *     "department": "경영지원팀",
-     *     "absentCase": "연차",
-     *     "days": "1.000",
-     *     "duration": "2023.03.03(종일) ~ 2023.03.03(종일)",
-     *     "requestDate": "2023.03.02"
-     *   },
-     */
-    @GetMapping("/origin")
-    public List<OriginDTO> origin() throws IOException {
-        return DataRefactoring.origin();
-    }
-
-    @GetMapping("/users")
-    public List<UserListDTO> users() throws IOException {
-        return DataRefactoring.getAllUsers();
-    }
-
+    /* View : absence.html
+    * 최근 업로드된 파일 시간 표시
+    */
     @GetMapping("/")
     public ModelAndView main(ModelAndView mav) throws IOException {
         Path list = Paths.get(upload_list_path + "/list.xlsx");
@@ -101,6 +86,19 @@ public class Controller {
         return mav;
     }
 
+    /* 원본 엑셀 데이터에서 추출하여, json 형태로 변환하여 반환 */
+    @GetMapping("/origin")
+    public List<OriginDTO> origin() throws IOException {
+        return DataRefactoring.origin();
+    }
+
+    /* list.xlsx 파일데이터에서 유저정보 json 으로 변환하여 반환 */
+    @GetMapping("/users")
+    public List<UserListDTO> users() throws IOException {
+        return DataRefactoring.getAllUsers();
+    }
+
+    /* list 파일 업로드한 것 다운로드하기 */
     @GetMapping("/download/list")
     public ResponseEntity<UrlResource> downloadList() throws MalformedURLException {
         UrlResource resource = new UrlResource("file:" + upload_list_path + "/list.xlsx");
@@ -110,6 +108,7 @@ public class Controller {
                 .body(resource);
     }
 
+    /* 네이버워크플레이스 부재 엑셀 파일 데이터 마지막 업로드 파일 다운로드 */
     @GetMapping("/download/absence")
     public ResponseEntity<UrlResource> downloadAbsence() throws MalformedURLException {
         UrlResource resource = new UrlResource("file:" + upload_absence_path + "/absence.xlsx");
@@ -119,6 +118,7 @@ public class Controller {
                 .body(resource);
     }
 
+    /* 유저목록 파일 업로드 */
     @PostMapping("/upload/user/lists")
     public RedirectView upload_list(@RequestParam("file")MultipartFile file,
                                ModelAndView mav) throws IOException, InterruptedException {
@@ -141,6 +141,8 @@ public class Controller {
         file.transferTo(savefile);
         return new RedirectView("/");
     }
+    
+    /* 네이버워크플레이스 부재 엑셀 파일 데이터 업로드 */
     @PostMapping("/upload/absence")
     public RedirectView upload_absence(@RequestParam("file")MultipartFile file,
                                ModelAndView mav) throws IOException, InterruptedException {
@@ -164,21 +166,25 @@ public class Controller {
         return new RedirectView("/");
     }
 
+    /* 휴가 기간 값을 list 형태로 변환 */
     @GetMapping("/refactor")
     public List<RefactorDTO> refactor() throws IOException {
         return DataRefactoring.refactor();
     }
 
+    /* 휴가 기간 값 + 일한 일수 데이터 합치기  */
     @GetMapping("/merge")
     public List<MergeDTO> merge() throws IOException {
         return DataRefactoring.merge();
     }
 
+    /* 달이 넘어가는 경우에 대한 처리 */
     @GetMapping("/dividemonth")
     public List<MergeDTO> divideMonth() throws IOException {
         return DataRefactoring.divideMonth();
     }
 
+    /* 선택한 연월에 대해서 엑셀 다운로드 */
     @GetMapping("/dateselect/{year}/{month}")
     public void dateSelect(
             @PathVariable("year") String year,
@@ -186,14 +192,24 @@ public class Controller {
             HttpServletResponse response
     ) throws IOException {
         new ExcelCreation().createFile(response, DataRefactoring.getEachMonthWithSelectMonth(year,month), year, month);
-        //return DataRefactor.getEachMonthWithSelectMonth(year,month);
     }
 
-    @GetMapping("/test/crawler")
-    public void data() throws IOException {
-        Connection connection =
-                Jsoup.connect("https://onware.ncpworkplace.com/authn/oauthLogin?response_type=code&client_id=DaYn1zZY5_ayPaqxfn7c&redirect_uri=https%3A%2F%2Fauth.worksmobile.com%2Fview%2Foauth%2Fsso%2Fauthorization%2FR59C18W8&worksId=jy@onware.co.kr");
-        log.info("{} " , connection.get().toString());
-
+    /* 결과 엑셀로 내려 받기 */
+    @GetMapping("/calculate/isholiday/{years}/{month}")
+    public void calculate(@PathVariable("years") String years,
+                          @PathVariable("month") String month,
+                          HttpServletResponse response) throws IOException {
+        new ExcelCreation().createFile(response, MergeDTO.convert(dataRefactorService.isHolidayCalculate(years, month)), years, month);
     }
+
+    @GetMapping("/isholiday/{years}/{month}")
+    public int holiday(@PathVariable("years") String years,
+                          @PathVariable("month") String month,
+                          HttpServletResponse response) throws IOException {
+
+        LunarCalendar lunarCalendar = new LunarCalendar();
+        Set<String> localDate = lunarCalendar.holidayArray(years, month);
+        return localDate.size();
+    }
+
 }
