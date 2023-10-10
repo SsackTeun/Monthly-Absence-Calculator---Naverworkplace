@@ -78,7 +78,7 @@
         window.onload = function(){
 
             let html = "";
-            fetch("/users", {
+            fetch("/files/userlist/users", {
                 method: "get"
             }).then(res=> res.json())
             .then(users => {
