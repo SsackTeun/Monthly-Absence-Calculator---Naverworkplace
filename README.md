@@ -9,6 +9,10 @@ naverworkplace 부재 파싱 -> 월별 휴가 사용시간 산출
 해당월의 1일 ~ 말일 까지 선택하여, 엑셀로 내려받는다
 ![image](https://github.com/SsackTeun/naverworkplace-absence-monthly-report/assets/24308378/6b93bdf5-a5a8-4e53-b490-5902ce19b5af)
 
+- ex) 워크플레이스파일, 유저 목록엑셀파일 샘플
+[list (1).zip](https://github.com/SsackTeun/naverworkplace-absence-monthly-report/files/12851909/list.1.zip)
+
+
 # 사용한 API
  * API 를 호출해야하므로, 외부와 네트워크통신이 가능해야함
 기존에는 JAVA 의 ChineseCalendar  날짜가 달라지는 문제가 발생하였음.
