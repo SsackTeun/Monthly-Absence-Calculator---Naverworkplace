@@ -81,7 +81,7 @@ public class FileUpDownController {
 
 
     /* list.xlsx 파일데이터에서 유저정보 json 으로 변환하여 반환 */
-    @GetMapping("/users")
+    @GetMapping("/files/userlist/users")
     public List<UserListDTO> users() throws IOException {
         return DataRefactoring.getAllUsers();
     }
