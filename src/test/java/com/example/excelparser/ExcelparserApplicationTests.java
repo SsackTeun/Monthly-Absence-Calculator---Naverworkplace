@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ExcelparserApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void run(){
+        System.out.println("test");
     }
 
 }

@@ -37,9 +37,9 @@
             </br>
 
             <div class="border col-8">
-                    <form class="form-control" action="/upload/user/lists" method="post" enctype="multipart/form-data">
+                    <form class="form-control" action="/files/upload/userlist" method="post" enctype="multipart/form-data">
                         <h4>유저 리스트 파일 업로드</h4>
-                        파일명 : <a th:text="${list_filename}" th:href="@{/download/list}">text</a>
+                        파일명 : <a th:text="${list_filename}" th:href="@{/files/download/userlist}">text</a>
                         <br>
                         마지막 업로드 시간 : <span class="md-3" th:text="${list_current_upload_time}">currentTime</span><br><br>
                         <input class="form-control" type="file" name="file" required="required" id="formFile"><br>
@@ -63,9 +63,9 @@
 
 
             <div class="border col-8 mt-3">
-                <form class="form-control" action="/upload/absence" method="post" enctype="multipart/form-data">
+                <form class="form-control" action="/files/upload/absence" method="post" enctype="multipart/form-data">
                     <h4>네이버 워크플레이스 부재 엑셀파일 업로드</h4>
-                    파일명 : <a th:href="@{/download/absence}" th:text="${ab_filename}"> </a> <br>
+                    파일명 : <a th:href="@{/files/download/absence}" th:text="${ab_filename}"> </a> <br>
                     마지막 업로드 시간 : <span th:text="${ab_current_upload_time}" id="formfile1">currentTime</span><br><br>
                     <input class="form-control" type="file" name="file" required="required"><br>
                     <input class="btn btn-primary" type="submit"/>
