@@ -1,8 +1,8 @@
 package com.example.excelparser.service;
 
 import com.example.excelparser.dto.UserListDTO;
-import com.example.excelparser.dto.origin.MergeOriginWithDurationDTO;
-import com.example.excelparser.dto.origin.OriginDTO;
+import com.example.excelparser.dto.original.MergeOriginWithDurationDTO;
+import com.example.excelparser.dto.original.OriginDTO;
 import com.example.excelparser.util.excel.ExcelParserUtil;
 import org.springframework.stereotype.Service;
 

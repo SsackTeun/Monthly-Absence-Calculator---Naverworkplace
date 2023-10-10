@@ -1,6 +1,6 @@
 package com.example.excelparser.util.excel;
 
-import com.example.excelparser.dto.origin.OriginDTO;
+import com.example.excelparser.dto.original.OriginDTO;
 import com.example.excelparser.dto.UserListDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFCell;

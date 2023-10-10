@@ -1,4 +1,4 @@
-package com.example.excelparser.dto.origin;
+package com.example.excelparser.dto.original;
 
 import com.example.excelparser.util.date.LunarCalendar;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,7 +53,6 @@ public class Duration {
                 durationObj = new Duration();
                 durationObj.setStartDate(matcher.group(1).concat(":"+ matcher.group(2)));
                 durationObj.setEndDate(matcher.group(3).concat(":"+ matcher.group(4)));
-                //log.debug("{} : {} : {} : {} ", matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
             }
             list.add(durationObj);
         });

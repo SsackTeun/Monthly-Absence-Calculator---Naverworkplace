@@ -1,7 +1,7 @@
 package com.example.excelparser.util;
 
 import com.example.excelparser.dto.MergeDTO;
-import com.example.excelparser.dto.origin.OriginDTO;
+import com.example.excelparser.dto.original.OriginDTO;
 import com.example.excelparser.dto.RefactorDTO;
 import com.example.excelparser.dto.UserListDTO;
 import com.example.excelparser.util.excel.ExcelParserUtil;

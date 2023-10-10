@@ -1,4 +1,4 @@
-package com.example.excelparser.dto.origin;
+package com.example.excelparser.dto.original;
 
 import com.example.excelparser.dto.UserListDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.net.ssl.SSLException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Slf4j

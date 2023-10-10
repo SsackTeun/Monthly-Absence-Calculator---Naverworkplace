@@ -3,10 +3,9 @@ package com.example.excelparser.controller;
 import com.example.excelparser.dto.MergeDTO;
 import com.example.excelparser.dto.RefactorDTO;
 import com.example.excelparser.dto.UserListDTO;
-import com.example.excelparser.dto.origin.OriginDTO;
+import com.example.excelparser.dto.original.OriginDTO;
 import com.example.excelparser.service.DataRefactorService;
 import com.example.excelparser.util.DataRefactoring;
-import com.example.excelparser.util.date.LunarCalendar;
 import com.example.excelparser.util.excel.ExcelCreation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.UrlResource;
@@ -26,14 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
@@ -204,12 +197,4 @@ public class Controller {
                           HttpServletResponse response) throws IOException {
         new ExcelCreation().createFile(response, MergeDTO.convert(dataRefactorService.isHolidayCalculate(years, month)), years, month);
     }
-
-
-
-    public int  isWeekend(LocalDate localDate){
-        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        return dayOfWeek.getValue();
-    }
-
 }
