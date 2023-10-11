@@ -11,8 +11,8 @@ public class RefactorDTO {
     private String name;
 
     private String email; // 유니크
-    //private String department;
 
     private String position;
+
     private List<String> duration;
 }

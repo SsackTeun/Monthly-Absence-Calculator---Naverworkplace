@@ -36,7 +36,7 @@ public class MergeOriginWithDurationDTO{
      * UTILITY
      * @Param origin (원본 데이터), @Param users (유저 원본데이터)
      */
-    public static List<MergeOriginWithDurationDTO> convertTo(List<OriginDTO> origin, List<UserListDTO> users){
+    public static List<MergeOriginWithDurationDTO> convertTo(List<SourceExcelDataExtractorDTO> origin, List<UserListDTO> users){
         //결과리스트
         List<MergeOriginWithDurationDTO> durations = new ArrayList<>();
         MergeOriginWithDurationDTO duration = null;
@@ -44,13 +44,13 @@ public class MergeOriginWithDurationDTO{
         /**
          * 원본에서 꺼내서 새로 만들어낼 데이터에 값 넣기
          */
-        for (OriginDTO originDTO : origin) {
-            log.debug("{}", originDTO);
+        for (SourceExcelDataExtractorDTO sourceExcelDataExtractorDTO : origin) {
+            log.debug("{}", sourceExcelDataExtractorDTO);
             duration = new MergeOriginWithDurationDTO();
-            duration.setLoginId(originDTO.getLoginId());
-            duration.setName(originDTO.getName());
-            duration.setPosition(originDTO.getPosition());
-            duration.setDurations(Duration.parseFromOrigin(originDTO.getDurations()));
+            duration.setLoginId(sourceExcelDataExtractorDTO.getLoginId());
+            duration.setName(sourceExcelDataExtractorDTO.getName());
+            duration.setPosition(sourceExcelDataExtractorDTO.getPosition());
+            duration.setDurations(Duration.parseFromOrigin(sourceExcelDataExtractorDTO.getDurations()));
             durations.add(duration);
         }
 

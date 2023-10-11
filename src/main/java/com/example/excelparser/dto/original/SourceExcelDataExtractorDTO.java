@@ -3,7 +3,7 @@ package com.example.excelparser.dto.original;
 import lombok.Data;
 
 @Data
-public class OriginDTO {
+public class SourceExcelDataExtractorDTO {
     //문서번호
     private String doc_num;
 

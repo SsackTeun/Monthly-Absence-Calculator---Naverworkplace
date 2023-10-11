@@ -1,17 +1,14 @@
 package com.example.excelparser.controller;
 
-import com.example.excelparser.dto.MergeDTO;
 import com.example.excelparser.dto.UserListDTO;
-import com.example.excelparser.service.DataRefactorService;
+import com.example.excelparser.service.AbsenceCalculatorService;
 import com.example.excelparser.util.DataRefactoring;
-import com.example.excelparser.util.excel.ExcelCreation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,17 +18,11 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
 @RestController
 public class FileUpDownController {
-
-    /* */
-    private DataRefactorService dataRefactorService;
 
     /* 저장 폴더 루트 위치 */
     public final static String MULTIPART_LOCATION = System.getProperty("user.dir")+"/data";
@@ -43,14 +34,6 @@ public class FileUpDownController {
     /* 네이버워크플레이스 부재 엑셀파일 업로드파일 저장 위치 */
     public final static String UPLOAD_ABSENCE_PATH =MULTIPART_LOCATION +"/absence";
     public final static String ABSENCE_FILENAME = "absence.xlsx";
-
-    public FileUpDownController(DataRefactorService dataRefactorService) {
-        this.dataRefactorService = dataRefactorService;
-    }
-
-
-
-
 
     /* list.xlsx 파일데이터에서 유저정보 json 으로 변환하여 반환 */
     @GetMapping("/files/userlist/users")
@@ -123,18 +106,17 @@ public class FileUpDownController {
     /* 다운로드 네이버워크플레이스 부재일정 파일 */
     @GetMapping("/files/download/absence")
     public ResponseEntity<UrlResource> downloadAbsence() throws MalformedURLException {
-        UrlResource resource = new UrlResource("file:" + UPLOAD_ABSENCE_PATH + "/absence.xlsx");
-        String contentDisposition = "attachment; filename=\""+ "absence.xlsx" + "\"";
+        UrlResource resource = new UrlResource("file:" + UPLOAD_ABSENCE_PATH + "/" + ABSENCE_FILENAME);
+        String contentDisposition = "attachment; filename=\""+ ABSENCE_FILENAME + "\"";
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(resource);
     }
 
-    /* 결과 엑셀로 내려 받기 */
     @GetMapping("/files/download/result/{years}/{month}")
     public void calculate(@PathVariable("years") String years,
                           @PathVariable("month") String month,
                           HttpServletResponse response) throws IOException {
-        new ExcelCreation().createFile(response, MergeDTO.convert(dataRefactorService.isHolidayCalculate(years, month)), years, month);
+        new AbsenceCalculatorService().isHolidayCalculate(years,month,response);
     }
 }

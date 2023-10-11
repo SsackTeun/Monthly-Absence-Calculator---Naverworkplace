@@ -1,7 +1,6 @@
 package com.example.excelparser.util.date;
 
-import com.example.excelparser.dto.HolidayAPIDTO;
-import com.example.excelparser.dto.Item;
+import com.example.excelparser.dto.spcdeinfoapi.RestDeInfoDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,7 +19,6 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.SSLException;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -79,20 +75,20 @@ public class LunarCalendar {
                 .build(true)
                 .toUri();
 
-        HolidayAPIDTO holidayAPIDTO = WebClient.create()
+        RestDeInfoDTO restDeInfoDTO = WebClient.create()
                 .get()
                 .uri(uri)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new IllegalArgumentException("계정정보가 잘못 되었습니다")))
-                .bodyToMono(HolidayAPIDTO.class)
+                .bodyToMono(RestDeInfoDTO.class)
                 .block();
 
-        log.info("date : {}", holidayAPIDTO.toString());
+        log.info("date : {}", restDeInfoDTO.toString());
 
-        Object items = holidayAPIDTO.getResponse().getBody().getItems();
-
+//        Object items = HolidayAPIDTO.getResponse().getBody().getItems();
+        Object items = restDeInfoDTO.getResponse().getBody().getItems();
         log.info("{}::::asdf", items.getClass().getTypeName());
         Set<String> holidaysSet = new HashSet<>();
 
@@ -109,7 +105,7 @@ public class LunarCalendar {
             if(items1 instanceof ArrayList){
                 log.info("{}", "1");
                 ((ArrayList<?>) items1).forEach(x -> {
-                    Item i = objectMapper.convertValue(x, Item.class);
+                    RestDeInfoDTO.Item i = objectMapper.convertValue(x, RestDeInfoDTO.Item.class);
                     holidaysSet.add(i.getLocdate());
                 });
 

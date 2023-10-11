@@ -1,6 +1,6 @@
 package com.example.excelparser.util.excel;
 
-import com.example.excelparser.dto.original.OriginDTO;
+import com.example.excelparser.dto.original.SourceExcelDataExtractorDTO;
 import com.example.excelparser.dto.UserListDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class ExcelParserUtil {
+    /* list.xlsx 파일 읽어서 List<UserListDTO> 객체로 변경 */
     public static List<UserListDTO> getUsers() throws IOException {
         String dir = System.getProperty("user.dir")+"/data/list/list.xlsx";
         //파일 읽기
@@ -64,13 +65,15 @@ public class ExcelParserUtil {
         }
         return list;
     }
-    public static List<OriginDTO> readAbsenceTimeOffList() throws IOException {
+
+    /* absence.xlsx 파일을 읽어서 List<SourceExcelDataExtractorDTO> 객체로 변경 */
+    public static List<SourceExcelDataExtractorDTO> readAbsenceTimeOffList() throws IOException {
         //파일 읽기
         String dir = System.getProperty("user.dir")+"/data/absence/absence.xlsx";
         XSSFWorkbook workbook = new XSSFWorkbook(dir);
 
         //데이터 직렬화
-        List<OriginDTO> list = new ArrayList<>();
+        List<SourceExcelDataExtractorDTO> list = new ArrayList<>();
 
         //첫번째시트 선택
         XSSFSheet sheet = workbook.getSheetAt(0);
@@ -81,7 +84,7 @@ public class ExcelParserUtil {
         //각 행 탐색
         for(int rowNum = 1; rowNum < ALL_OF_ROWS; rowNum++){
             XSSFRow row = sheet.getRow(rowNum); // 선택된 시트로 부터 행을 가져옴
-            OriginDTO originDTO = new OriginDTO(); // 각 셀을 담을 객체
+            SourceExcelDataExtractorDTO sourceExcelDataExtractorDTO = new SourceExcelDataExtractorDTO(); // 각 셀을 담을 객체
 
             if(row!=null){
                 int cells = row.getPhysicalNumberOfCells(); // 선택된 행이 빈값이 아니면, 셀갯수세기
@@ -94,33 +97,33 @@ public class ExcelParserUtil {
 
                     switch(cellNumber){
                         case 0: //문서번호
-                            originDTO.setDoc_num(value);
+                            sourceExcelDataExtractorDTO.setDoc_num(value);
                             break;
                         case 1: // 이름
-                            originDTO.setName(value);
+                            sourceExcelDataExtractorDTO.setName(value);
                             break;
                         case 2: // 로그인 아이디
-                            originDTO.setLoginId(value);
+                            sourceExcelDataExtractorDTO.setLoginId(value);
                             break;
                         case 3: // 직책
-                            originDTO.setPosition(value);
+                            sourceExcelDataExtractorDTO.setPosition(value);
                             break;
                         case 4: //부재 항목
-                            originDTO.setAbsentCase(value);
+                            sourceExcelDataExtractorDTO.setAbsentCase(value);
                             break;
                         case 5: //일수
-                            originDTO.setDays(value);
+                            sourceExcelDataExtractorDTO.setDays(value);
                             break;
                         case 6: //기간
-                            originDTO.setDurations(convertDuration(value));
+                            sourceExcelDataExtractorDTO.setDurations(convertDuration(value));
                             break;
                         case 7: //작성일
-                            originDTO.setRequestDate(value);
+                            sourceExcelDataExtractorDTO.setRequestDate(value);
                             break;
                     }
                     log.debug( rowNum + "번 행 : " + cellNumber + "번 열 값은: " + value);
                 }
-                list.add(originDTO);
+                list.add(sourceExcelDataExtractorDTO);
             }
         }
         return list;

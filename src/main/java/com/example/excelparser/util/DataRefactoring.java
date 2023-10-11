@@ -1,7 +1,7 @@
 package com.example.excelparser.util;
 
 import com.example.excelparser.dto.MergeDTO;
-import com.example.excelparser.dto.original.OriginDTO;
+import com.example.excelparser.dto.original.SourceExcelDataExtractorDTO;
 import com.example.excelparser.dto.RefactorDTO;
 import com.example.excelparser.dto.UserListDTO;
 import com.example.excelparser.util.excel.ExcelParserUtil;
@@ -35,7 +35,7 @@ public class DataRefactoring {
 
 
     /** 원본데이터 가져오기 **/
-    public static List<OriginDTO> origin() throws IOException {
+    public static List<SourceExcelDataExtractorDTO> origin() throws IOException {
         return excelParserUtil.readAbsenceTimeOffList();
     }
 
@@ -64,7 +64,7 @@ public class DataRefactoring {
 
 
         /** 부재일정사용리스트 **/
-        List<OriginDTO> absenceList = origin();
+        List<SourceExcelDataExtractorDTO> absenceList = origin();
         List<String> durations;
         for(int i = 0; i < refactorDTOList.size(); i++){
             //모든 유저 이메일로 찾는다.
