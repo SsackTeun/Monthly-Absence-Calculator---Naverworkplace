@@ -1,6 +1,6 @@
 package com.example.excelparser.controller;
 
-import com.example.excelparser.dto.UserListDTO;
+import com.example.excelparser.dto.absence.UserListDTO;
 import com.example.excelparser.service.AbsenceCalculatorService;
 import com.example.excelparser.util.DataRefactoring;
 import lombok.extern.slf4j.Slf4j;

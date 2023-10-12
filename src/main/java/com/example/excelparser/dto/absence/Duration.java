@@ -1,4 +1,4 @@
-package com.example.excelparser.dto.original;
+package com.example.excelparser.dto.absence;
 
 import com.example.excelparser.util.date.LunarCalendar;
 import com.fasterxml.jackson.core.JsonProcessingException;

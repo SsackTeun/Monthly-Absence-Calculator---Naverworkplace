@@ -1,9 +1,9 @@
 package com.example.excelparser.service;
 
-import com.example.excelparser.dto.MergeDTO;
-import com.example.excelparser.dto.UserListDTO;
-import com.example.excelparser.dto.original.MergeOriginWithDurationDTO;
-import com.example.excelparser.dto.original.SourceExcelDataExtractorDTO;
+import com.example.excelparser.dto.absence.MergeDTO;
+import com.example.excelparser.dto.absence.UserListDTO;
+import com.example.excelparser.dto.absence.MergeOriginWithDurationDTO;
+import com.example.excelparser.dto.absence.SourceExcelDataExtractorDTO;
 import com.example.excelparser.util.excel.ExcelCreation;
 import com.example.excelparser.util.excel.ExcelParserUtil;
 

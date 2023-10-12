@@ -1,6 +1,5 @@
-package com.example.excelparser.dto.original;
+package com.example.excelparser.dto.absence;
 
-import com.example.excelparser.dto.UserListDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

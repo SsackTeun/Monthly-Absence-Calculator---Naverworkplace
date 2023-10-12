@@ -1,7 +1,7 @@
 package com.example.excelparser.util.excel;
 
-import com.example.excelparser.dto.original.SourceExcelDataExtractorDTO;
-import com.example.excelparser.dto.UserListDTO;
+import com.example.excelparser.dto.absence.SourceExcelDataExtractorDTO;
+import com.example.excelparser.dto.absence.UserListDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;

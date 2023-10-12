@@ -1,4 +1,4 @@
-package com.example.excelparser.dto;
+package com.example.excelparser.dto.absence;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

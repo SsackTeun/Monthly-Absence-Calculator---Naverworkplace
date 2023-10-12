@@ -1,6 +1,6 @@
 package com.example.excelparser.util.excel;
 
-import com.example.excelparser.dto.MergeDTO;
+import com.example.excelparser.dto.absence.MergeDTO;
 import com.example.excelparser.util.date.LunarCalendar;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;

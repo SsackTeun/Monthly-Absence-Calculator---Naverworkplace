@@ -1,4 +1,4 @@
-package com.example.excelparser.dto.original;
+package com.example.excelparser.dto.absence;
 
 import lombok.Data;
 

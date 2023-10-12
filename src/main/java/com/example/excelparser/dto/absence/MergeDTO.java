@@ -1,6 +1,5 @@
-package com.example.excelparser.dto;
+package com.example.excelparser.dto.absence;
 
-import com.example.excelparser.dto.original.MergeOriginWithDurationDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
