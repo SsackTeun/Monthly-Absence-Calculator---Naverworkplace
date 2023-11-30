@@ -120,7 +120,7 @@ public class ExcelCreation {
         titleCell.setCellValue("총 근로일수");
 
         titleCell = titleRow.createCell(6);
-        titleCell.setCellValue(realWorkingDay + " 일");
+        titleCell.setCellValue(realWorkingDay);
 
         return workbook;
     }

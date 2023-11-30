@@ -146,13 +146,19 @@ public class LunarCalendar {
 
         localDate.stream().forEach(
                 s -> {
-                    log.info("test: {}", LocalDate.parse(s, format).getDayOfWeek());
-                    if(LocalDate.parse(s, format).getDayOfWeek().toString().equals("SATURDAY")
-                            ||LocalDate.parse(s, format).getDayOfWeek().toString().equals("SUNDAY")){
-                        isHolidayAndWeekend.getAndIncrement();
+                    if (s != null) {
+                        //log.info("test: {}", LocalDate.parse(s, format).getDayOfWeek());
+                        if (LocalDate.parse(s, format).getDayOfWeek().toString().equals("SATURDAY")
+                                || LocalDate.parse(s, format).getDayOfWeek().toString().equals("SUNDAY")) {
+                            isHolidayAndWeekend.getAndIncrement();
+                        }
+                    } else {
+                        // s가 null인 경우에 대한 처리를 여기에 추가
+                        // 예: log.warning("날짜가 null입니다.");
                     }
                 }
         );
+
         /* 찐 공휴일 */
         int realHolidayCount = localDate.size() - isHolidayAndWeekend.get();
         log.info("찐 공휴일 = {해당월의 국경일 수} - {국경일이면서, 주말인 것} : {}",  localDate.size() - isHolidayAndWeekend.get());
