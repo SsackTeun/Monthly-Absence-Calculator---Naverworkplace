@@ -63,7 +63,6 @@ public class LunarCalendar {
     public Set<String> holidayArray(String yyyy, String month) throws SSLException, JsonProcessingException, UnsupportedEncodingException {
         holidaysSet.clear();
 
-
         String decodeServiceKey = "DVcn3lMambqbUG2eCIroEmHMdcjD8IADQy/2+Q1nr7S23NymKJNSduAKjSFMnRKavNuUkGoD0ZyOgUC+B/jQ4g==";
         String encodeServiceKey = URLEncoder.encode(decodeServiceKey, "UTF-8");
 
@@ -125,10 +124,7 @@ public class LunarCalendar {
             log.info(" instance type : {}" , items.getClass());
             holidaysSet.add(null);
         }
-
         return holidaysSet;
-
-
     }
 
     /* 실근무일수 반환 */
