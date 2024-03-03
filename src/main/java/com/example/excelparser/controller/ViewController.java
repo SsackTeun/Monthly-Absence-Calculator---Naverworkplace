@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -25,6 +26,14 @@ public class ViewController {
     // 메인 뷰
     @GetMapping("/")
     public ModelAndView main(ModelAndView mav) throws IOException {
+
+        /**/
+        LocalDate now = LocalDate.now();
+        int currentYear = now.getYear();
+        int currentMonth = now.getMonthValue();
+
+        mav.addObject("currentYear", currentYear);
+        mav.addObject("currentMonth", currentMonth);
 
         /* MAIN 로드할 때, 업로드 시간 표시할 파일 경로 */
         String upload_list_path = fileUpDownController.UPLOAD_LIST_PATH;

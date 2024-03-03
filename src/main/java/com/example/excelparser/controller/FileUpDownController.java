@@ -4,20 +4,28 @@ import com.example.excelparser.dto.absence.UserListDTO;
 import com.example.excelparser.service.AbsenceCalculatorService;
 import com.example.excelparser.util.DataRefactoring;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -118,5 +126,22 @@ public class FileUpDownController {
                           @PathVariable("month") String month,
                           HttpServletResponse response) throws IOException {
         new AbsenceCalculatorService().isHolidayCalculate(years,month,response);
+    }
+
+    @GetMapping("/files/update/absence/{date}")
+    public void updateAbsenceFile(@PathVariable("date") String date){
+
+        String url = "http://localhost:5000/download?date="+date;
+        log.info("date : {}", date);
+        File saveFile = new File(UPLOAD_ABSENCE_PATH + "/"  + ABSENCE_FILENAME);
+        Resource resource = new RestTemplate().getForObject(url, Resource.class);
+        if (resource != null) {
+            try (ReadableByteChannel readableByteChannel = Channels.newChannel(resource.getInputStream());
+                 FileOutputStream fileOutputStream = new FileOutputStream(saveFile)) {
+                fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
